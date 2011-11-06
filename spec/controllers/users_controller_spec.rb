@@ -47,7 +47,26 @@ describe UsersController do
       get 'new'
       response.should have_selector("title", :content => "Sign up")
     end
+
+    it "should have a name field" do
+      get :new
+      response.should have_selector("input[name='user[name]'][type='text']")
+    end
   
+    it "should have an email field" do
+      get :new
+      response.should have_selector("input[name='user[email]'][type='text']")
+    end
+   
+    it "should have a password field" do
+      get :new
+      response.should have_selector("input[name='user[password]'][type='password']")
+    end
+   
+    it "should have a password confirmation field" do
+      get :new
+      response.should have_selector("input[name='user[password_confirmation]'][type='password']")
+    end
   end
 
   
@@ -76,6 +95,19 @@ describe UsersController do
       end
     end
 
+    describe "clear password" do 
+      before(:each) do 
+        @attr = { :name => "valid name", :email => "email@email.com", :password => "password123",
+                  :password_confirmation => "different123" }
+      end
+
+      it "should clear password after invalid request" do
+        post :create, :user => @attr
+        response.should have_selector("input[name='user[password_confirmation]'][type='password'][value='']")
+      end
+    
+    end
+
     describe "success" do
       before(:each) do
         @attr = { :name => "New User", :email => "user@example.com",
@@ -96,6 +128,11 @@ describe UsersController do
       it "should have a welcome message" do
         post :create, :user => @attr
         flash[:success].should =~ /welcome to the Physio Zone/i
+      end
+
+      it "should sign the user in" do
+        post :create, :user => @attr
+        controller.should be_signed_in
       end
     end
   end
