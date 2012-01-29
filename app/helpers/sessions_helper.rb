@@ -8,7 +8,6 @@ module SessionsHelper
   def sign_out
     cookies.delete(:remember_token)
     self.current_user = nil
-    puts "signout#{self.current_user.nil?}"
   end
 
   def current_user=(user)
@@ -16,7 +15,6 @@ module SessionsHelper
   end
 
   def signed_in?
-    puts current_user
     !current_user.nil?
   end
 

@@ -13,8 +13,8 @@ require 'spec_helper'
 
 describe User do
 
-  before(:each) do 
-    @attr = { 
+  before(:each) do
+    @attr = {
       :name => "Example User",
       :email => "user@example.com",
       :password => "foobar",
@@ -26,7 +26,7 @@ describe User do
     User.create!(@attr)
   end
 
-  it "should require a name" do 
+  it "should require a name" do
     no_name_user = User.new(@attr.merge(:name => ""))
     no_name_user.should_not be_valid
   end
@@ -42,7 +42,7 @@ describe User do
     long_name_user.should_not be_valid
   end
 
-  it "should accept valid email addresses" do 
+  it "should accept valid email addresses" do
     addresses = %w[user@foo.com THE_USER@foo.bar.org first.last@foo.jp]
     addresses.each do |address|
       valid_email_user = User.new(@attr.merge(:email => address))
@@ -73,8 +73,6 @@ describe User do
   end
 
   describe "password validations" do
-  
-
     it "should require a password" do
       User.new(@attr.merge(:password => "", :password_confirmation => "")).
         should_not be_valid
@@ -96,7 +94,6 @@ describe User do
       hash = @attr.merge(:password => long, :password_confirmation => long)
       User.new(hash).should_not be_valid
     end
-
   end
 
   describe "password encryption" do
@@ -108,13 +105,13 @@ describe User do
     it "should have an encrypted password attribute" do
       @user.should respond_to(:encrypted_password)
     end
-    
-    it "should set the encrypted password" do 
+
+    it "should set the encrypted password" do
       @user.encrypted_password.should_not be_blank
     end
-    
+
     describe "has_password? method" do
-      it "should be true if the passwords match" do 
+      it "should be true if the passwords match" do
         @user.has_password?(@attr[:password]).should be_true
       end
 
@@ -142,3 +139,4 @@ describe User do
     end
   end
 end
+
