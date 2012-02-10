@@ -27,7 +27,9 @@ class User < ActiveRecord::Base
                        :length       => { :within => 6..40 }
    
   before_save :encrypt_password
-
+  
+  has_many :microposts, :dependent => :destroy
+  
   def has_password?(submitted_password)
     encrypted_password == encrypt(submitted_password)
   end
