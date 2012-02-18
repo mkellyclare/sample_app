@@ -18,3 +18,7 @@ Factory.define :micropost do |micropost|
   micropost.content "Foo bar"
   micropost.association :user
 end
+
+Factory.sequence :micropost_content do |n|
+	"Post number #{n}"
+end
