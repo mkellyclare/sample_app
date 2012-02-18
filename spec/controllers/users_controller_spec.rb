@@ -93,6 +93,20 @@ describe UsersController do
       get :show, :id => @user
       response.should have_selector("span.content", :content => mp1.content)
       response.should have_selector("span.content", :content => mp2.content)
+      response.should_not have_selector("a", :href => "/microposts/1",
+                                             :content => "delete")
+    end
+
+    it "should not allow a non signed in user delete a post" do
+      test_sign_in(@user)
+      mp1 = Factory(:micropost, :user => @user, :content => "Foo bar")
+      mp2 = Factory(:micropost, :user => @user, :content => "Baz quux")
+      get :show, :id => @user
+      response.should have_selector("a", :href => "/microposts/1",
+                                         :content => "delete")
+      response.should have_selector("a", :href => "/microposts/2",
+                                         :content => "delete")
+
     end
 
     it "should paginate the user's microposts" do
