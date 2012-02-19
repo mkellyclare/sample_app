@@ -8,36 +8,54 @@ render_views
   end
 
   describe "GET 'home'" do
-    it "should be successful" do
-      get 'home'
-      response.should be_success
+
+    describe "when not signed in" do
+
+      before(:each) do
+        get :home
+      end
+
+      it "should be successful" do
+        response.should be_success
+      end
+
+      it "should have the right title" do
+        response.should have_selector("title",
+                                      :content => "#{@base_title}Home")
+      end
     end
 
-    it "should have the right title" do
-      get 'home'
-      response.should have_selector("title", 
-                    :content => @base_title + 'Home')
-    end
+    describe "when signed in" do
 
-    describe "for signed-in users" do
       before(:each) do
         @user = test_sign_in(Factory(:user))
-      end  
+        other_user = Factory(:user, :email => Factory.next(:email))
+        other_user.follow!(@user)
+      end
 
-      it "should show the number of microposts" do
+      it "should show the number of microposts singular" do
         mp1 = Factory(:micropost, :user => @user, :content => "Foo bar")
         get 'home'
         response.should have_selector("span", :class => "microposts", :content => "1 micropost")
       end
 
-      it "should show the number of microposts" do
+      it "should show the number of microposts plural" do
         mp1 = Factory(:micropost, :user => @user, :content => "Foo bar")
         mp2 = Factory(:micropost, :user => @user, :content => "Baz quux")
         get 'home'
         response.should have_selector("span", :class => "microposts", :content => "2 microposts")
       end
+
+      it "should have the right follower/following counts" do
+        get :home
+        response.should have_selector("a", :href => following_user_path(@user),
+                                           :content => "0 following")
+        response.should have_selector("a", :href => followers_user_path(@user),
+                                           :content => "1 follower")
+      end
     end
   end
+
 
   describe "GET 'contact'" do
     it "should be successful" do
